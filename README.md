@@ -32,3 +32,10 @@ fastapi dev
 # api: http://localhost:8000/
 # swagger: http://localhost:8000/docs
 ```
+
+# Para correr un archivo especifico
+
+```sh
+fastapi dev main.py
+fastapi dev time_stamp.py
+```
