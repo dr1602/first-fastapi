@@ -1,12 +1,7 @@
 import zoneinfo
 from datetime import datetime
 from fastapi import FastAPI
-
-app = FastAPI()
-
-@app.get("/")
-async def root():
-    return {"message": "Hola, Dave!"}
+from pydantic import BaseModel
 
 country_timezones = {
     "CO": "America/Bogota",
@@ -15,6 +10,18 @@ country_timezones = {
     "BR": "America/Sao_Paulo",
     "PE": "America/Lima",
 }
+
+class Customer(BaseModel):
+    name: str
+    description: str | None
+    email: str
+    age: int
+
+app = FastAPI()
+
+@app.get("/")
+async def root():
+    return {"message": "Hola, Dave!"}
 
 @app.get("/time")
 async def specific_time():
@@ -44,7 +51,6 @@ async def formatted_time(format_code: str):
     else:
         return {"time without format": datetime.now()}
 
-# Nuevo reto: crear nuevo reto de endpoint que recia una variable en formato get 
-# y que automaticamente, pueda habilitar el formato de hora, 
-# como devolver la hora en un formato de 24 hrs
-
+@app.post('/customers')
+async def create_customer(customer_data: Customer):
+    return customer_data
