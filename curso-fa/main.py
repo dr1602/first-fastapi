@@ -1,7 +1,7 @@
 import zoneinfo
 from datetime import datetime
 from fastapi import FastAPI
-from pydantic import BaseModel
+from models import Customer, Transaction, Invoice
 
 country_timezones = {
     "CO": "America/Bogota",
@@ -10,12 +10,6 @@ country_timezones = {
     "BR": "America/Sao_Paulo",
     "PE": "America/Lima",
 }
-
-class Customer(BaseModel):
-    name: str
-    description: str | None
-    email: str
-    age: int
 
 app = FastAPI()
 
@@ -54,3 +48,11 @@ async def formatted_time(format_code: str):
 @app.post('/customers')
 async def create_customer(customer_data: Customer):
     return customer_data
+
+@app.post('/transactions')
+async def create_transaction(transaction_data: Transaction):
+    return transaction_data
+
+@app.post('/invoices')
+async def create_invoices(invoice_data: Invoice):
+    return invoice_data
