@@ -1,7 +1,7 @@
 import zoneinfo
 from datetime import datetime
-from fastapi import FastAPI
-from models import Customer, Transaction, Invoice
+from fastapi import FastAPI, HTTPException
+from models import CustomerCreate, Transaction, Invoice, Customer
 
 country_timezones = {
     "CO": "America/Bogota",
@@ -44,10 +44,31 @@ async def formatted_time(format_code: str):
         return { 'The {1} is {0:%d}, the {2} is {0:%B}.'.format(date, "day", "month") } # 'The day is 11, the month is March.'
     else:
         return {"time without format": datetime.now()}
+    
+db_customers: list[Customer] = []
 
-@app.post('/customers')
-async def create_customer(customer_data: Customer):
-    return customer_data
+@app.post('/customers', response_model=Customer)
+async def create_customer(customer_data: CustomerCreate):
+    customer = Customer.model_validate(customer_data.model_dump())
+    # Asumiendo que hace base de datos
+    db_customers.append(customer)
+    customer.id = len(db_customers)
+    return customer
+
+@app.get('/customers', response_model=list[Customer])
+async def list_customers():
+    return db_customers
+
+@app.get('/customers/{id}', response_model=Customer)
+async def list_customers(id: int):
+    for customer in db_customers:
+        if customer.id == id:
+            return customer
+    
+    raise HTTPException(
+        status_code=400,
+        detail=f'No hay cliente con el id {id}'
+    )
 
 @app.post('/transactions')
 async def create_transaction(transaction_data: Transaction):
