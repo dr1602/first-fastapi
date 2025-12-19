@@ -39,3 +39,9 @@ fastapi dev
 fastapi dev main.py
 fastapi dev time_stamp.py
 ```
+
+# Para saber la versión de FastAPI
+
+```sh
+pop freeze | grep fast
+```
