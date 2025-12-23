@@ -1,6 +1,6 @@
 import zoneinfo
 from datetime import datetime
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, status
 
 from models import CustomerCreate, Transaction, Invoice, Customer
 from db import SessionDep, create_all_tables
@@ -64,16 +64,30 @@ async def list_customers(session: SessionDep):
     return session.exec(select(Customer)).all()
 
 @app.get('/customers/{id}', response_model=Customer)
-async def list_customers(id: int, session: SessionDep):
+async def read_customer(id: int, session: SessionDep):
     customer = session.get(Customer, id)
 
     if not customer:
         raise HTTPException(
-            status_code=400,
+            status_code=status.HTTP_404_NOT_FOUND,
             detail=f'No hay cliente con el id {id}'
         )
     
     return customer
+
+@app.delete('/customers/{id}')
+async def delete_customer(id: int, session: SessionDep):
+    customer_db = session.get(Customer, id)
+
+    if not customer_db:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f'No hay cliente con el id {id}'
+        )
+    
+    session.delete(customer_db)
+    session.commit()
+    return { 'detail': 'ok'}
 
 @app.post('/transactions')
 async def create_transaction(transaction_data: Transaction):
