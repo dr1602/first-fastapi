@@ -1,3 +1,4 @@
+from typing import Optional
 from pydantic import BaseModel, EmailStr
 from sqlmodel import SQLModel, Field
 
@@ -9,14 +10,22 @@ class CustomerBase(SQLModel):
     email: EmailStr = Field(default=None)
     age: int = Field(default=None)
 
-class CustomerCreate(CustomerBase):
-    pass
-
 # me parece que aqui activas la tabla
 class Customer(CustomerBase, table=True):
     # Field es para definir que se debe de guardar en la base de datos
     id: int | None = Field(default=None, primary_key=True)
 
+class CustomerCreate(CustomerBase):
+    pass
+
+class CustomerUpdate(SQLModel):
+    name: Optional[str] = None
+    description: Optional[str] = None
+    email: Optional[EmailStr] = None
+    age: Optional[int]= None
+
+class CustomerUpdate(CustomerUpdate):
+    pass
 
 class Transaction(BaseModel):
     id: int
