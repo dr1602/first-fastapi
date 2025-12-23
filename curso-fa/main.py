@@ -64,15 +64,16 @@ async def list_customers(session: SessionDep):
     return session.exec(select(Customer)).all()
 
 @app.get('/customers/{id}', response_model=Customer)
-async def list_customers(id: int):
-    for customer in db_customers:
-        if customer.id == id:
-            return customer
+async def list_customers(id: int, session: SessionDep):
+    customer = session.get(Customer, id)
+
+    if not customer:
+        raise HTTPException(
+            status_code=400,
+            detail=f'No hay cliente con el id {id}'
+        )
     
-    raise HTTPException(
-        status_code=400,
-        detail=f'No hay cliente con el id {id}'
-    )
+    return customer
 
 @app.post('/transactions')
 async def create_transaction(transaction_data: Transaction):
