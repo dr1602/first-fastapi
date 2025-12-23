@@ -4,6 +4,7 @@ from fastapi import FastAPI, HTTPException
 
 from models import CustomerCreate, Transaction, Invoice, Customer
 from db import SessionDep, create_all_tables
+from sqlmodel import select
 
 country_timezones = {
     "CO": "America/Bogota",
@@ -56,14 +57,11 @@ async def create_customer(customer_data: CustomerCreate, session: SessionDep):
     session.add(customer)
     session.commit() # genera la secuecia de sql y la ejecuta en el motor de la db
     session.refresh(customer) # refrescamos la variable de customer en memoria
-    # Asumiendo que hace base de datos 
-    db_customers.append(customer)
-    customer.id = len(db_customers)
     return customer
 
 @app.get('/customers', response_model=list[Customer])
-async def list_customers():
-    return db_customers
+async def list_customers(session: SessionDep):
+    return session.exec(select(Customer)).all()
 
 @app.get('/customers/{id}', response_model=Customer)
 async def list_customers(id: int):

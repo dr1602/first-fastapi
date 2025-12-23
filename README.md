@@ -58,4 +58,7 @@ sqlite3 db.sqlite3
 # Para valer valor en campo en customer
 
 select * from customer;
+
+# select * from customer;
+# Luffy|Captain|Luffy@muhi.com|19|1
 ```
