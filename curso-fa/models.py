@@ -1,18 +1,21 @@
 from pydantic import BaseModel, EmailStr
-from sqlmodel import SQLModel
+from sqlmodel import SQLModel, Field
 
+# aquí no se crea la tabla porque no hay table true, y es para recibir datos 
 class CustomerBase(SQLModel):
-    name: str
-    description: str | None
-    email: EmailStr
-    age: int
+    # Field es para definir que se debe de guardar en la base de datos
+    name: str = Field(default=None)
+    description: str | None = Field(default=None)
+    email: EmailStr = Field(default=None)
+    age: int = Field(default=None)
 
 class CustomerCreate(CustomerBase):
     pass
 
 # me parece que aqui activas la tabla
 class Customer(CustomerBase, table=True):
-    id: int | None = None
+    # Field es para definir que se debe de guardar en la base de datos
+    id: int | None = Field(default=None, primary_key=True)
 
 
 class Transaction(BaseModel):
