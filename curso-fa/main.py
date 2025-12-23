@@ -89,6 +89,20 @@ async def delete_customer(id: int, session: SessionDep):
     session.commit()
     return { 'detail': 'ok'}
 
+@app.patch('/customers/correct', response_model=Customer)
+async def modify_customer(customer_data: CustomerCreate, session: SessionDep):
+    customer_db = session(Customer, id)
+
+    if not customer_db:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f'No hay cliente con el id {id}'
+        )
+    
+    session.delete(customer_db)
+    session.commit()
+    return { 'detail': 'ok'}
+
 @app.post('/transactions')
 async def create_transaction(transaction_data: Transaction):
     return transaction_data
