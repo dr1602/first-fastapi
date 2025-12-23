@@ -43,5 +43,22 @@ fastapi dev time_stamp.py
 # Para saber la versión de FastAPI
 
 ```sh
-pop freeze | grep fast
+pip freeze | grep fast
+```
+
+# Para ejecutar la base de datos
+
+```sh
+sqlite3 db.sqlite3
+
+# Para conocer las tablas
+
+.tables
+
+# Para valer valor en campo en customer
+
+select * from customer;
+
+# select * from customer;
+# Luffy|Captain|Luffy@muhi.com|19|1
 ```
