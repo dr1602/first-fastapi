@@ -62,3 +62,34 @@ select * from customer;
 # select * from customer;
 # Luffy|Captain|Luffy@muhi.com|19|1
 ```
+
+# Para correr las nuevas tablas
+
+```sh
+
+cd curso-fa
+fastapi dev app/main.py
+sqlite3 db.sqlite3
+
+```
+
+# Para ver las tablas
+
+Primero asegurate de que tu terminal se encuentra al mismo nivel que tu archivo de bd.
+
+```sh
+.tables
+```
+
+# Para ver los schemas
+
+```sh
+.schema ###
+
+### en este caso puede ser:
+.schema customer
+
+# o
+
+.schema transaction
+```
