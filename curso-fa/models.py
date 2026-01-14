@@ -2,6 +2,22 @@ from typing import Optional
 from pydantic import BaseModel, EmailStr
 from sqlmodel import SQLModel, Field, Relationship
 
+# Creamos una tabla intermedia para conectar los planes con los customers
+class CustomerPlan(SQLModel, table=True):
+    id: int = Field(primary_key=True)
+    plan_id: int = Field(foreign_key='plan.id')
+    customer_id: int = Field(foreign_key='customer.id')
+
+# Creamos la base para los planes
+class Plan(SQLModel, table=True):
+    id: int | None = Field(primary_key=True)
+    name: str = Field(default=None)
+    price: int = Field(default=None)
+    description: str = Field(default=None)
+    customers: list['Customer'] = Relationship(
+        back_populates='plans', link_model=CustomerPlan
+    )
+
 # aquí no se crea la tabla porque no hay table true, y es para recibir datos 
 class CustomerBase(SQLModel):
     # Field es para definir que se debe de guardar en la base de datos
@@ -16,6 +32,9 @@ class Customer(CustomerBase, table=True):  # donde tiene true porque es donde va
     id: int | None = Field(default=None, primary_key=True)
     ### vincula el customer con el transaction
     transactions: list['Transaction'] = Relationship(back_populates='customer')# no creará nuevos campos, campo de relación, no permitirá obtener datos. guardaremos la lista de todas las transacciones, para mostrarlas en nuestro objeto en memori
+    plans: list[Plan] = Relationship(
+        back_populates='customers', link_model=CustomerPlan
+    )
 
 class CustomerCreate(CustomerBase):
     pass
